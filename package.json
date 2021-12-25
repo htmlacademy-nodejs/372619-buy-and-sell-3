@@ -4,7 +4,7 @@
   "description": "Куплю. Продам",
   "main": "./src/service/service.js",
   "scripts": {
-    "start": "node ./src/service/service.js",
+    "start": "nodemon ./src/service/service.js",
     "test": "npm run eslint",
     "eslint": "eslint --ext .js src/"
   },
@@ -20,6 +20,10 @@
   "homepage": "https://github.com/maximryabov22011988/372619-buy-and-sell-3#readme",
   "devDependencies": {
     "eslint": "8.4.1",
-    "eslint-config-htmlacademy": "0.6.0"
+    "eslint-config-htmlacademy": "0.6.0",
+    "nodemon": "2.0.15"
+  },
+  "dependencies": {
+    "chalk": "4.1.2"
   }
 }

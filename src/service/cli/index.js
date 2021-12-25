@@ -3,8 +3,9 @@
 const help = require(`./help`);
 const version = require(`./version`);
 const generate = require(`./generate`);
+const server = require(`./server`);
 
-const Cli = [help, version, generate].reduce((result, module) => {
+const Cli = [help, version, generate, server].reduce((result, module) => {
   result[module.name] = module;
   return result;
 }, {});

@@ -30,9 +30,9 @@ module.exports = {
     const [userPort] = args;
     const port = Number.parseInt(userPort, 10) || DEFAULT_PORT;
 
-    app.listen(port, ({message}) => {
-      if (message) {
-        return console.error(chalk.red(`Ошибка при создании сервера: ${message}`));
+    app.listen(port, (err) => {
+      if (err) {
+        return console.error(chalk.red(`Ошибка при создании сервера: ${err.message}`));
       }
 
       return console.info(chalk.green(`Ожидаю соединений на ${port}`));

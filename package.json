@@ -4,8 +4,8 @@
   "description": "Куплю. Продам",
   "main": "./src/service/service.js",
   "scripts": {
-    "start": "node ./src/service/service.js",
-    "start-front-server": "node ./src/express/express.js",
+    "start": "nodemon ./src/service/service.js",
+    "start-front-server": "nodemon ./src/express/express.js",
     "test": "npm run eslint",
     "eslint": "eslint --ext .js src/"
   },
@@ -26,6 +26,7 @@
   },
   "dependencies": {
     "chalk": "4.1.2",
-    "express": "4.17.2"
+    "express": "4.17.2",
+    "pug": "3.0.2"
   }
 }

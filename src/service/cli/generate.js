@@ -4,7 +4,7 @@ const fs = require(`fs`).promises;
 const chalk = require(`chalk`);
 const {
   MOCK_FILENAME,
-  exitCode
+  ExitCode
 } = require(`../../constants`);
 const {
   getRandomInt,
@@ -69,7 +69,7 @@ module.exports = {
 
     if (countOffer > MAX_COUNT) {
       console.error(chalk.red(`Не больше 1000 объявлений`));
-      process.exit(exitCode.ERROR);
+      process.exit(ExitCode.ERROR);
     }
 
     const content = JSON.stringify(generateOffers(countOffer, titles, sentences, categories));

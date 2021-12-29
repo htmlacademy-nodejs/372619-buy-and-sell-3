@@ -7,12 +7,12 @@ const USER_ARGV_INDEX = 2;
 
 const MOCK_FILENAME = `mocks.json`;
 
-const exitCode = {
+const ExitCode = {
   SUCCESS: 0,
   ERROR: 1,
 };
 
-const httpCode = {
+const HttpCode = {
   OK: 200,
   NOT_FOUND: 404,
   INTERNAL_SERVER_ERROR: 500,
@@ -24,6 +24,6 @@ module.exports = {
   DEFAULT_COMMAND,
   USER_ARGV_INDEX,
   MOCK_FILENAME,
-  exitCode,
-  httpCode
+  ExitCode,
+  HttpCode
 };

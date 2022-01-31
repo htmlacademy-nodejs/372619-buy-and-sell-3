@@ -1,6 +1,7 @@
 'use strict';
 
 const fs = require(`fs`).promises;
+const {nanoid: generateId} = require(`nanoid`);
 const chalk = require(`chalk`);
 const {
   MOCK_FILENAME,
@@ -13,10 +14,13 @@ const {
 
 const DEFAULT_COUNT = 1;
 const MAX_COUNT = 1000;
+const MAX_ID_LENGTH = 6;
+const MAX_COMMENTS_COUNT = 4;
 
 const FILE_TITLES_PATH = `./data/titles.txt`;
 const FILE_SENTENCES_PATH = `./data/sentences.txt`;
 const FILE_CATEGORIES_PATH = `./data/categories.txt`;
+const FILE_COMMENTS_PATH = `./data/comments.txt`;
 
 const OfferType = {
   OFFER: `offer`,
@@ -35,14 +39,25 @@ const PictureRestrict = {
 
 const getPictureFileName = (number) => number > 10 ? `item${number}.jpg` : `item0${number}.jpg`;
 
-const generateOffers = (count, titles, sentences, categories) => (
+const generateComments = (count, comments) => (
   Array(count).fill({}).map(() => ({
+    id: generateId(MAX_ID_LENGTH),
+    text: shuffle(comments)
+      .slice(0, getRandomInt(1, 3))
+      .join(` `),
+  }))
+);
+
+const generateOffers = (count, titles, sentences, categories, comments) => (
+  Array(count).fill({}).map(() => ({
+    id: generateId(MAX_ID_LENGTH),
     title: titles[getRandomInt(0, titles.length - 1)],
     picture: getPictureFileName(getRandomInt(PictureRestrict.MIN, PictureRestrict.MAX)),
     description: shuffle(sentences).slice(1, 5).join(` `),
     type: OfferType[Object.keys(OfferType)[Math.floor(Math.random() * Object.keys(OfferType).length)]],
     sum: getRandomInt(SumRestrict.MIN, SumRestrict.MAX),
     category: [categories[getRandomInt(0, categories.length - 1)]],
+    comments: generateComments(getRandomInt(1, MAX_COMMENTS_COUNT), comments)
   }))
 );
 
@@ -63,6 +78,7 @@ module.exports = {
     const sentences = await readContent(FILE_SENTENCES_PATH);
     const titles = await readContent(FILE_TITLES_PATH);
     const categories = await readContent(FILE_CATEGORIES_PATH);
+    const comments = await readContent(FILE_COMMENTS_PATH);
 
     const [count] = args;
     const countOffer = Number.parseInt(count, 10) || DEFAULT_COUNT;
@@ -72,7 +88,7 @@ module.exports = {
       process.exit(ExitCode.ERROR);
     }
 
-    const content = JSON.stringify(generateOffers(countOffer, titles, sentences, categories));
+    const content = JSON.stringify(generateOffers(countOffer, titles, sentences, categories, comments));
 
     try {
       await fs.writeFile(MOCK_FILENAME, content);

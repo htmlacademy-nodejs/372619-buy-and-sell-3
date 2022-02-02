@@ -1,7 +1,6 @@
 'use strict';
 
 const fs = require(`fs`).promises;
-const {nanoid: generateId} = require(`nanoid`);
 const chalk = require(`chalk`);
 const {
   MOCK_FILENAME,
@@ -10,11 +9,11 @@ const {
 const {
   getRandomInt,
   shuffle,
+  generateId
 } = require(`../../utils`);
 
 const DEFAULT_COUNT = 1;
 const MAX_COUNT = 1000;
-const MAX_ID_LENGTH = 6;
 const MAX_COMMENTS_COUNT = 4;
 
 const FILE_TITLES_PATH = `./data/titles.txt`;
@@ -41,7 +40,7 @@ const getPictureFileName = (number) => number > 10 ? `item${number}.jpg` : `item
 
 const generateComments = (count, comments) => (
   Array(count).fill({}).map(() => ({
-    id: generateId(MAX_ID_LENGTH),
+    id: generateId(),
     text: shuffle(comments)
       .slice(0, getRandomInt(1, 3))
       .join(` `),
@@ -50,7 +49,7 @@ const generateComments = (count, comments) => (
 
 const generateOffers = (count, titles, sentences, categories, comments) => (
   Array(count).fill({}).map(() => ({
-    id: generateId(MAX_ID_LENGTH),
+    id: generateId(),
     title: titles[getRandomInt(0, titles.length - 1)],
     picture: getPictureFileName(getRandomInt(PictureRestrict.MIN, PictureRestrict.MAX)),
     description: shuffle(sentences).slice(1, 5).join(` `),

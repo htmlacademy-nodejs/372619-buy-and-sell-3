@@ -5,8 +5,10 @@
   "main": "./src/service/service.js",
   "scripts": {
     "start": "nodemon ./src/service/service.js",
+    "generate-mocks": "node ./src/service/service.js --generate 5",
     "start-front-server": "nodemon ./src/express/express.js",
-    "test": "npm run eslint",
+    "test": "npm run eslint && npm run jest",
+    "jest": "jest",
     "eslint": "eslint --ext .js src/"
   },
   "repository": {

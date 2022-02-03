@@ -24,11 +24,17 @@ const HttpCode = {
   BAD_REQUEST: 400
 };
 
+const NodeEnv = {
+  DEVELOPMENT: `development`,
+  PRODUCTION: `production`
+};
+
 module.exports = {
   DEFAULT_COMMAND,
   USER_ARGV_INDEX,
   MOCK_FILENAME,
   API_PREFIX,
   ExitCode,
-  HttpCode
+  HttpCode,
+  NodeEnv
 };

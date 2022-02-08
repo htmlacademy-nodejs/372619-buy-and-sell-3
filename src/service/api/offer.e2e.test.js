@@ -15,7 +15,7 @@ const mockData = [
     "picture": `item14.jpg`,
     "description": `Кому нужен этот новый телефон, если тут такое... Это настоящая находка для коллекционера! Продаю с болью в сердце... Если найдёте дешевле — сброшу цену.`,
     "type": `offer`,
-    "sum": 96004,
+    "price": 96004,
     "category": [
       `Книги`
     ],
@@ -32,7 +32,7 @@ const mockData = [
     "picture": `item16.jpg`,
     "description": `Мой дед не мог её сломать. Кажется, что это хрупкая вещь. Две страницы заляпаны свежим кофе. Товар в отличном состоянии.`,
     "type": `offer`,
-    "sum": 50937,
+    "price": 50937,
     "category": [
       `Животные`
     ],
@@ -57,7 +57,7 @@ const mockData = [
     "picture": `item12.jpg`,
     "description": `Не пытайтесь торговаться. Цену вещам я знаю. Пользовались бережно и только по большим праздникам. Если найдёте дешевле — сброшу цену. Даю недельную гарантию.`,
     "type": `offer`,
-    "sum": 5005,
+    "price": 5005,
     "category": [
       `Книги`
     ],
@@ -74,7 +74,7 @@ const mockData = [
     "picture": `item08.jpg`,
     "description": `Даю недельную гарантию. Таких предложений больше нет! Это настоящая находка для коллекционера! Две страницы заляпаны свежим кофе.`,
     "type": `offer`,
-    "sum": 24537,
+    "price": 24537,
     "category": [
       `Журналы`
     ],
@@ -91,7 +91,7 @@ const mockData = [
     "picture": `item02.jpg`,
     "description": `Если найдёте дешевле — сброшу цену. Продаю с болью в сердце... Бонусом отдам все аксессуары. Даю недельную гарантию.`,
     "type": `offer`,
-    "sum": 81996,
+    "price": 81996,
     "category": [
       `Посуда`
     ],
@@ -146,7 +146,7 @@ describe(`API creates an offer if data is valid`, () => {
     description: `Дам погладить котика. Дорого. Не гербалайф`,
     picture: `cat.jpg`,
     type: `OFFER`,
-    sum: 100500
+    price: 100500
   };
 
   const app = createAPI();
@@ -171,7 +171,7 @@ describe(`API refuses to create an offer if data is invalid`, () => {
     description: `Дам погладить котика. Дорого. Не гербалайф`,
     picture: `cat.jpg`,
     type: `OFFER`,
-    sum: 100500
+    price: 100500
   };
 
   const app = createAPI();
@@ -192,7 +192,7 @@ describe(`API changes existent offer`, () => {
     description: `Дам погладить котика. Дорого. Не гербалайф`,
     picture: `cat.jpg`,
     type: `OFFER`,
-    sum: 100500
+    price: 100500
   };
 
   const app = createAPI();
@@ -217,7 +217,7 @@ test(`API returns status code 404 when trying to change non-existent offer`, () 
     description: `объект`,
     picture: `объявления`,
     type: `однако`,
-    sum: 404
+    price: 404
   };
 
   return request(app).put(`/offers/NOEXST`).send(validOffer).expect(HttpCode.NOT_FOUND);
@@ -231,7 +231,7 @@ test(`API returns status code 400 when trying to change an offer with invalid da
     title: `невалидный`,
     description: `объект`,
     picture: `объявления`,
-    type: `нет поля sum`
+    type: `нет поля price`
   };
 
   return request(app).put(`/offers/lGyCYn`).send(invalidOffer).expect(HttpCode.BAD_REQUEST);

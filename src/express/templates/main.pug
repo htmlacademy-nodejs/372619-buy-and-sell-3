@@ -145,20 +145,20 @@ block content
         .tickets-list__header
           p.tickets-list__title Самые обсуждаемые
         ul
-          each offer of offers
-            li.tickets-list__item
-              .ticket-card.ticket-card--color09
-                .ticket-card__img
-                  +insertOfferImage(offer)
-                .ticket-card__info
-                  +ticketLabel(offer.type)
-                  .ticket-card__categories
-                    a(href='#') #{offer.category}
-                  .ticket-card__header
-                    h3.ticket-card__title
-                      a(href='#') #{offer.title}
-                    p.ticket-card__price
-                      span.js-sum #{offer.sum}
-                      |  ₽
-                  .ticket-card__desc
-                    p #{offer.description}
+        each offer of offers
+          li.tickets-list__item
+            .ticket-card.ticket-card--color09
+              .ticket-card__img
+                +insertOfferImage(offer)
+              .ticket-card__info
+                +ticketLabel(offer.type)
+                .ticket-card__categories
+                  a(href='#') #{offer.category}
+                .ticket-card__header
+                  h3.ticket-card__title
+                    a(href='#') #{offer.title}
+                  p.ticket-card__price
+                    span.js-sum #{offer.price}
+                    |  ₽
+                .ticket-card__desc
+                  p #{offer.description}

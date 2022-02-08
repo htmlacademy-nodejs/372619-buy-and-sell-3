@@ -9,24 +9,24 @@ block content
           | Найдено
           span.js-results  #{results.length} публикации
         ul.search-results__list
-          each offer of results
-            li.search-results__item
-              .ticket-card.ticket-card--color05
-                .ticket-card__img
-                  +insertOfferImage(offer)
-                .ticket-card__info
-                  +ticketLabel(offer.type)
-                  .ticket-card__categories
-                    each category of offer.category
-                      a(href='#') #{category}
-                  .ticket-card__header
-                    h3.ticket-card__title
-                      a(href='#') #{offer.title}
-                    p.ticket-card__price
-                      span.js-sum #{offer.price}
-                      |  ₽
-                  .ticket-card__desc
-                    p #{offer.description}
+        each offer of results
+          li.search-results__item
+            .ticket-card.ticket-card--color05
+              .ticket-card__img
+                +insertOfferImage(offer)
+              .ticket-card__info
+                +ticketLabel(offer.type)
+                .ticket-card__categories
+                  each category of offer.category
+                    a(href='#') #{category}
+                .ticket-card__header
+                  h3.ticket-card__title
+                    a(href='#') #{offer.title}
+                  p.ticket-card__price
+                    span.js-sum #{offer.price}
+                    |  ₽
+                .ticket-card__desc
+                  p #{offer.description}
     section.tickets-list
       h2.visually-hidden Самые новые предложения
       .tickets-list__wrapper

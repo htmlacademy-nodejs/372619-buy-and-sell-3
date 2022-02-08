@@ -14,12 +14,12 @@ html.html-not-found(lang='ru')
         h2.error__subtitle Страница не найдена
         ul.error__list
           li.error__item
-            a(href='sign-up.html') Вход и регистрация
+            a(href='/register') Вход и регистрация
           li.error__item
-            a(href='new-ticket.html') Новая публикация
+            a(href='/offers/add') Новая публикация
           li.error__item
-            a(href='main.html') Главная страница
-        form.error__search.search.search--small(method='get' action='#' autocomplete='off')
+            a(href='/') Главная страница
+        form.error__search.search.search--small(method="get" action="/search" autocomplete="off")
           input(type='search' name='query' placeholder='Поиск' aria-label='Поиск')
           .search__icon
           .search__close-btn

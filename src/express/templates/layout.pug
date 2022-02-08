@@ -7,6 +7,12 @@ head
     title Куплю Продам
     link(rel='stylesheet' href='/css/style.min.css')
 body
+  mixin insertOfferImage(offer)
+    img(src=`/img/${offer.picture ? offer.picture : 'blank.png'}` alt=offer.title)
+
+  mixin ticketLabel(type)
+    span(class!=attributes.class || `ticket-card__label`) #{type === `OFFER` ? `Куплю` : `Продам`}
+
   include partials/header.pug
   block content
   include partials/footer.pug

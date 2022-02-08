@@ -22,8 +22,8 @@ const FILE_CATEGORIES_PATH = `./data/categories.txt`;
 const FILE_COMMENTS_PATH = `./data/comments.txt`;
 
 const OfferType = {
-  OFFER: `offer`,
-  SALE: `sale`,
+  OFFER: `OFFER`,
+  SALE: `SALE`,
 };
 
 const SumRestrict = {
@@ -54,7 +54,7 @@ const generateOffers = (count, titles, sentences, categories, comments) => (
     picture: getPictureFileName(getRandomInt(PictureRestrict.MIN, PictureRestrict.MAX)),
     description: shuffle(sentences).slice(1, 5).join(` `),
     type: OfferType[Object.keys(OfferType)[Math.floor(Math.random() * Object.keys(OfferType).length)]],
-    sum: getRandomInt(SumRestrict.MIN, SumRestrict.MAX),
+    price: getRandomInt(SumRestrict.MIN, SumRestrict.MAX),
     category: [categories[getRandomInt(0, categories.length - 1)]],
     comments: generateComments(getRandomInt(1, MAX_COMMENTS_COUNT), comments)
   }))
@@ -87,7 +87,7 @@ module.exports = {
       process.exit(ExitCode.ERROR);
     }
 
-    const content = JSON.stringify(generateOffers(countOffer, titles, sentences, categories, comments));
+    const content = JSON.stringify(generateOffers(countOffer, titles, sentences, categories, comments), undefined, 2);
 
     try {
       await fs.writeFile(MOCK_FILENAME, content);

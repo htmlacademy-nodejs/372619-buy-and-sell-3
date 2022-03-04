@@ -4,7 +4,7 @@
   "description": "Куплю. Продам",
   "main": "./src/service/service.js",
   "scripts": {
-    "start": "cross-env LOG_LEVEL=error ./src/service/service.js",
+    "start": "cross-env LOG_LEVEL=error nodemon ./src/service/service.js",
     "start::debug": "cross-env LOG_LEVEL=info NODE_ENV=development nodemon ./src/service/service.js",
     "start-frontend-server": "nodemon ./src/express/express.js",
     "generate-mocks": "node ./src/service/service.js --generate 5",

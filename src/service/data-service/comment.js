@@ -1,30 +1,33 @@
 'use strict';
 
-const {generateId} = require(`../../utils`);
-
 class CommentService {
-  create(offer, comment) {
-    const newComment = Object.assign({
-      id: generateId()
-    }, comment);
-
-    offer.comments.push(newComment);
-    return newComment;
+  constructor(sequelize) {
+    this._Comment = sequelize.models.Comment;
   }
 
-  delete(offer, commentId) {
-    const removedComment = offer.comments.find((item) => item.id === commentId);
-    if (!removedComment) {
-      return null;
-    }
-
-    offer.comments = offer.comments.filter((item) => item.id !== commentId);
-
-    return removedComment;
+  async create(offerId, comment) {
+    return await this._Comment.create({
+      offerId,
+      ...comment
+    });
   }
 
-  findAll(offer) {
-    return offer.comments;
+  async delete(commentId) {
+    const deletedRows = await this._Comment.destroy({
+      where: {
+        id: commentId
+      }
+    });
+    return !!deletedRows;
+  }
+
+  async findAll(offerId) {
+    return await this._Comment.findAll({
+      where: {
+        offerId
+      },
+      raw: true
+    });
   }
 }
 

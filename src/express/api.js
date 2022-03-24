@@ -19,20 +19,20 @@ class API {
     return response.data;
   }
 
-  getOffers() {
-    return this._load(`/offers`);
+  getOffers({offset, limit, withComments} = {}) {
+    return this._load(`/offers`, {params: {offset, limit, withComments}});
   }
 
-  getOffer(id) {
-    return this._load(`/offers/${id}`);
+  getOffer(id, {withComments} = {}) {
+    return this._load(`/offers/${id}`, {params: {withComments}});
   }
 
   search(query) {
     return this._load(`/search`, {params: {query}});
   }
 
-  getCategories() {
-    return this._load(`/category`);
+  getCategories(withCount) {
+    return this._load(`/category`, {params: {withCount}});
   }
 
   createOffer(data) {

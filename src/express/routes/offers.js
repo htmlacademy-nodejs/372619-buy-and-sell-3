@@ -19,7 +19,7 @@ offersRouter.get(`/edit/:id`, async (req, res) => {
   const {id} = req.params;
   const [offer, categories] = await Promise.all([
     api.getOffer(id),
-    api.getCategories()
+    api.getCategories(true)
   ]);
   res.render(`offers/ticket-edit`, {offer, categories});
 });
@@ -35,10 +35,8 @@ offersRouter.post(`/add`, uploadImage.single(`avatar`), async (req, res) => {
     type: formValues.action,
     description: formValues.comment,
     title: formValues[`ticket-name`],
-    category: ensureArray(formValues.category),
+    categories: ensureArray(formValues.categories),
   };
-
-  console.log(offerData);
 
   try {
     await api.createOffer(offerData);
@@ -48,6 +46,10 @@ offersRouter.post(`/add`, uploadImage.single(`avatar`), async (req, res) => {
   }
 });
 
-offersRouter.get(`/:id`, (req, res) => res.render(`offers/ticket`));
+offersRouter.get(`/:id`, async (req, res) => {
+  const {id} = req.params;
+  const offer = await api.getOffer(id, {withComments: true});
+  res.render(`offers/ticket`, {offer});
+});
 
 module.exports = offersRouter;

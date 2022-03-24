@@ -1,6 +1,8 @@
 'use strict';
 
 const {Router} = require(`express`);
+const sequelize = require(`../lib/sequelize`);
+const defineModels = require(`../models`);
 const categoryApi = require(`../api/category`);
 const offerApi = require(`../api/offer`);
 const searchApi = require(`../api/search`);
@@ -10,16 +12,14 @@ const {
   OfferService,
   CommentService
 } = require(`../data-service`);
-const getMockData = require(`../lib/get-mock-data`);
 
 const app = new Router();
+defineModels(sequelize);
 
 (async () => {
-  const mockData = await getMockData();
-
-  categoryApi(app, new CategoryService(mockData));
-  searchApi(app, new SearchService(mockData));
-  offerApi(app, new OfferService(mockData), new CommentService());
+  categoryApi(app, new CategoryService(sequelize));
+  searchApi(app, new SearchService(sequelize));
+  offerApi(app, new OfferService(sequelize), new CommentService(sequelize));
 })();
 
 module.exports = app;

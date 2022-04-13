@@ -11,6 +11,13 @@ head
         pointer-events: none;
         user-select: none;
       }
+      .server-error{
+        border-radius: 10px;
+        color: white;
+        background-color: tomato;
+        margin: 20px 0;
+        padding: 10px;
+      }
 body
   -
     const getRandomInt = (max) => Math.ceil(Math.random()*max);
@@ -27,6 +34,11 @@ body
 
   mixin ticketLabel(type)
     span(class!=attributes.class || `ticket-card__label`) #{type === `OFFER` ? `Куплю` : `Продам`}
+
+  mixin insertErrorMessage(messages)
+    if messages
+      each message of messages
+        .server-error= message
 
   mixin ticketCard()
       .ticket-card(class = `ticket-card--color0${getRandomInt(8)}`)

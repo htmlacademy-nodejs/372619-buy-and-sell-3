@@ -2,6 +2,7 @@
 
 const fs = require(`fs`).promises;
 const chalk = require(`chalk`);
+const passwordUtils = require(`../lib/password`);
 const sequelize = require(`../lib/sequelize`);
 const initDatabase = require(`../lib/init-db`);
 const {getLogger} = require(`../lib/logger`);
@@ -9,6 +10,7 @@ const {
   getRandomInt,
   shuffle,
 } = require(`../../utils`);
+const {OfferType} = require(`../../constants`);
 
 const logger = getLogger({name: `api`});
 
@@ -20,11 +22,6 @@ const FILE_SENTENCES_PATH = `./data/sentences.txt`;
 const FILE_CATEGORIES_PATH = `./data/categories.txt`;
 const FILE_COMMENTS_PATH = `./data/comments.txt`;
 
-const OfferType = {
-  OFFER: `OFFER`,
-  SALE: `SALE`,
-};
-
 const SumRestrict = {
   MIN: 1000,
   MAX: 100000,
@@ -35,28 +32,28 @@ const PictureRestrict = {
   MAX: 16,
 };
 
-const users = [
+const userList = [
   {
     email: `ivanov@example.com`,
-    passwordHash: `5f4dcc3b5aa765d61d8327deb882cf99`,
-    firstName: `Иван`,
-    lastName: `Иванов`,
+    passwordHash: passwordUtils.hashSync(`ivanov`),
+    name: `Иван Иванов`,
     avatar: `avatar1.jpg`
   },
   {
     email: `petrov@example.com`,
-    passwordHash: `5f4dcc3b5aa765d61d8327deb882cf99`,
-    firstName: `Пётр`,
-    lastName: `Петров`,
+    passwordHash: passwordUtils.hashSync(`petrov`),
+    name: `Пётр Петров`,
     avatar: `avatar2.jpg`
   }
 ];
 
 const getPictureFileName = (number) => number > 10 ? `item${number}.jpg` : `item0${number}.jpg`;
 
-const generateComments = (count, comments) => (
+const getRandomUserEmail = (users) => users[getRandomInt(0, users.length - 1)].email;
+
+const generateComments = (count, comments, users) => (
   Array(count).fill({}).map(() => ({
-    user: users[getRandomInt(0, users.length - 1)].email,
+    user: getRandomUserEmail(users),
     text: shuffle(comments)
       .slice(0, getRandomInt(1, 3))
       .join(` `),
@@ -77,7 +74,7 @@ const getRandomSubarray = (items) => {
   return result;
 };
 
-const generateOffers = (count, titles, sentences, categories, comments) => (
+const generateOffers = (count, titles, sentences, categories, comments, users) => (
   Array(count).fill({}).map(() => ({
     title: titles[getRandomInt(0, titles.length - 1)],
     picture: getPictureFileName(getRandomInt(PictureRestrict.MIN, PictureRestrict.MAX)),
@@ -85,8 +82,8 @@ const generateOffers = (count, titles, sentences, categories, comments) => (
     type: OfferType[Object.keys(OfferType)[Math.floor(Math.random() * Object.keys(OfferType).length)]],
     price: getRandomInt(SumRestrict.MIN, SumRestrict.MAX),
     categories: getRandomSubarray(categories),
-    comments: generateComments(getRandomInt(1, MAX_COMMENTS_COUNT), comments),
-    user: users[getRandomInt(0, users.length - 1)].email,
+    comments: generateComments(getRandomInt(1, MAX_COMMENTS_COUNT), comments, users),
+    user: getRandomUserEmail(users),
   }))
 );
 
@@ -119,8 +116,8 @@ module.exports = {
 
     const [count] = args;
     const countOffer = Number.parseInt(count, 10) || DEFAULT_COUNT;
-    const offers = generateOffers(countOffer, titles, sentences, categories, comments);
+    const offers = generateOffers(countOffer, titles, sentences, categories, comments, userList);
 
-    return initDatabase(sequelize, {offers, categories, users});
+    return initDatabase(sequelize, {offers, categories, users: userList});
   }
 };

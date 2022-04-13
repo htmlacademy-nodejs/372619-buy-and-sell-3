@@ -14,6 +14,18 @@ const ExitCode = {
   ERROR: 1,
 };
 
+const OfferType = {
+  OFFER: `OFFER`,
+  SALE: `SALE`,
+};
+
+const HttpMethod = {
+  GET: `GET`,
+  POST: `POST`,
+  PUT: `PUT`,
+  DELETE: `DELETE`
+};
+
 const HttpCode = {
   OK: 200,
   CREATED: 201,
@@ -36,5 +48,7 @@ module.exports = {
   API_PREFIX,
   ExitCode,
   HttpCode,
-  NodeEnv
+  NodeEnv,
+  OfferType,
+  HttpMethod
 };

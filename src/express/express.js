@@ -2,6 +2,9 @@
 
 const express = require(`express`);
 const path = require(`path`);
+const session = require(`express-session`);
+const SequelizeStore = require(`connect-session-sequelize`)(session.Store);
+const sequelize = require(`../service/lib/sequelize`);
 const myRoutes = require(`./routes/my`);
 const offersRoutes = require(`./routes/offers`);
 const mainRoutes = require(`./routes/main`);
@@ -11,7 +14,30 @@ const DEFAULT_PORT = 8080;
 const PUBLIC_DIR = `public`;
 const UPLOAD_DIR = `upload`;
 
+const {SESSION_SECRET} = process.env;
+if (!SESSION_SECRET) {
+  throw new Error(`SESSION_SECRET environment variable is not defined`);
+}
+
 const app = express();
+
+const sessionStore = new SequelizeStore({
+  db: sequelize,
+  expiration: 180000,
+  checkExpirationInterval: 60000
+});
+
+sequelize.sync({force: false});
+
+app.use(express.urlencoded({extended: false}));
+
+app.use(session({
+  secret: SESSION_SECRET,
+  store: sessionStore,
+  resave: false,
+  proxy: true,
+  saveUninitialized: false,
+}));
 
 app.use(`/my`, myRoutes);
 app.use(`/offers`, offersRoutes);

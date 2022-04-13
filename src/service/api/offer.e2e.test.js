@@ -5,6 +5,7 @@ const request = require(`supertest`);
 const {Sequelize} = require(`sequelize`);
 
 const initDb = require(`../lib/init-db`);
+const passwordUtils = require(`../lib/password`);
 const offerApi = require(`./offer`);
 const OfferService = require(`../data-service/offer`);
 const CommentService = require(`../data-service/comment`);
@@ -19,23 +20,21 @@ const mockCategories = [
 const mockUsers = [
   {
     email: `ivanov@example.com`,
-    passwordHash: `5f4dcc3b5aa765d61d8327deb882cf99`,
-    firstName: `Иван`,
-    lastName: `Иванов`,
+    passwordHash: passwordUtils.hashSync(`ivanov`),
+    name: `Иван Иванов`,
     avatar: `avatar1.jpg`
   },
   {
     email: `petrov@example.com`,
-    passwordHash: `5f4dcc3b5aa765d61d8327deb882cf99`,
-    firstName: `Пётр`,
-    lastName: `Петров`,
+    passwordHash: passwordUtils.hashSync(`petrov`),
+    name: `Пётр Петров`,
     avatar: `avatar2.jpg`
   }
 ];
 
 const mockOffers = [
   {
-    "title": `Куплю детские санки 1.`,
+    "title": `Куплю детские санки.`,
     "picture": `item14.jpg`,
     "description": `Кому нужен этот новый телефон, если тут такое... Это настоящая находка для коллекционера! Продаю с болью в сердце... Если найдёте дешевле — сброшу цену.`,
     "type": `OFFER`,
@@ -46,12 +45,14 @@ const mockOffers = [
     ],
     "comments": [
       {
+        "user": `petrov@example.com`,
         "text": `С чем связана продажа? Почему так дешёво? А сколько игр в комплекте?`
       }
-    ]
+    ],
+    "user": `ivanov@example.com`,
   },
   {
-    "title": `Куплю породистого кота 1.`,
+    "title": `Куплю породистого кота.`,
     "picture": `item16.jpg`,
     "description": `Мой дед не мог её сломать. Кажется, что это хрупкая вещь. Две страницы заляпаны свежим кофе. Товар в отличном состоянии.`,
     "type": `OFFER`,
@@ -61,18 +62,22 @@ const mockOffers = [
     ],
     "comments": [
       {
+        "user": `ivanov@example.com`,
         "text": `Почему в таком ужасном состоянии?`
       },
       {
+        "user": `petrov@example.com`,
         "text": `А сколько игр в комплекте? Оплата наличными или перевод на карту? Почему в таком ужасном состоянии?`
       },
       {
+        "user": `ivanov@example.com`,
         "text": `С чем связана продажа? Почему так дешёво? Почему в таком ужасном состоянии? Вы что?! В магазине дешевле.`
       }
-    ]
+    ],
+    "user": `petrov@example.com`,
   },
   {
-    "title": `Куплю детские санки 2.`,
+    "title": `Куплю детские санки.`,
     "picture": `item12.jpg`,
     "description": `Не пытайтесь торговаться. Цену вещам я знаю. Пользовались бережно и только по большим праздникам. Если найдёте дешевле — сброшу цену. Даю недельную гарантию.`,
     "type": `OFFER`,
@@ -83,9 +88,11 @@ const mockOffers = [
     ],
     "comments": [
       {
+        "user": `petrov@example.com`,
         "text": `Оплата наличными или перевод на карту? С чем связана продажа? Почему так дешёво?`
       }
-    ]
+    ],
+    "user": `ivanov@example.com`,
   },
   {
     "title": `Продам советскую посуду. Почти не разбита.`,
@@ -98,9 +105,11 @@ const mockOffers = [
     ],
     "comments": [
       {
+        "user": `ivanov@example.com`,
         "text": `С чем связана продажа? Почему так дешёво?`
       }
-    ]
+    ],
+    "user": `petrov@example.com`,
   },
   {
     "title": `Продам коллекцию журналов «Огонёк».`,
@@ -113,9 +122,11 @@ const mockOffers = [
     ],
     "comments": [
       {
+        "user": `ivanov@example.com`,
         "text": `Совсем немного...`
       }
-    ]
+    ],
+    "user": `ivanov@example.com`,
   }
 ];
 
@@ -147,17 +158,18 @@ describe(`API returns an offer with given id`, () => {
   });
 
   test(`Status code 200`, () => expect(response.statusCode).toBe(HttpCode.OK));
-  test(`Offer's title is "Куплю детские санки 1."`, () => expect(response.body.title).toBe(`Куплю детские санки 1.`));
+  test(`Offer's title is "Куплю детские санки."`, () => expect(response.body.title).toBe(`Куплю детские санки.`));
 });
 
 describe(`API creates an offer if data is valid`, () => {
   const newOffer = {
-    categories: [1],
+    categories: [1, 2],
     title: `Дам погладить котика`,
-    description: `Дам погладить котика. Дорого. Не гербалайф`,
+    description: `Дам погладить котика. Дорого. Не гербалайф. Дам погладить котика. Дорого. Не гербалайф`,
     picture: `cat.jpg`,
     type: `OFFER`,
-    price: 100500
+    price: 100500,
+    userId: 1,
   };
 
   let app;
@@ -176,12 +188,13 @@ describe(`API creates an offer if data is valid`, () => {
 
 describe(`API refuses to create an offer if data is invalid`, () => {
   const newOffer = {
-    categories: `Котики`,
+    categories: [1],
     title: `Дам погладить котика`,
     description: `Дам погладить котика. Дорого. Не гербалайф`,
     picture: `cat.jpg`,
     type: `OFFER`,
-    price: 100500
+    price: 100500,
+    userId: 1,
   };
 
   let app;
@@ -196,16 +209,41 @@ describe(`API refuses to create an offer if data is invalid`, () => {
       await request(app).post(`/offers`).send(badOffer).expect(HttpCode.BAD_REQUEST);
     }
   });
+
+  test(`When field type is wrong response code is 400`, async () => {
+    const badOffers = [
+      {...newOffer, price: true},
+      {...newOffer, picture: 12345},
+      {...newOffer, categories: `Котики`}
+    ];
+
+    for (const badOffer of badOffers) {
+      await request(app).post(`/offers`).send(badOffer).expect(HttpCode.BAD_REQUEST);
+    }
+  });
+
+  test(`When field value is wrong response code is 400`, async () => {
+    const badOffers = [
+      {...newOffer, price: -1},
+      {...newOffer, title: `too short`},
+      {...newOffer, categories: []}
+    ];
+
+    for (const badOffer of badOffers) {
+      await request(app).post(`/offers`).send(badOffer).expect(HttpCode.BAD_REQUEST);
+    }
+  });
 });
 
 describe(`API changes existent offer`, () => {
   const newOffer = {
     categories: [2],
     title: `Дам погладить котика`,
-    description: `Дам погладить котика. Дорого. Не гербалайф`,
+    description: `Дам погладить котика. Дорого. Не гербалайф. Дам погладить котика. Дорого. Не гербалайф.`,
     picture: `cat.jpg`,
     type: `OFFER`,
-    price: 100500
+    price: 100500,
+    userId: 1,
   };
 
   let app;
@@ -225,14 +263,15 @@ test(`API returns status code 404 when trying to change non-existent offer`, asy
 
   const validOffer = {
     categories: [3],
-    title: `валидный`,
-    description: `объект`,
-    picture: `объявления`,
-    type: `однако`,
-    price: 404
+    title: `Это вполне валидный`,
+    description: `объект объявления, однако поскольку такого объявления в базе нет`,
+    picture: `мы получим 404`,
+    type: `SALE`,
+    price: 404,
+    userId: 1,
   };
 
-  return request(app).put(`/offers/100`).send(validOffer).expect(HttpCode.NOT_FOUND);
+  return request(app).put(`/offers/100000`).send(validOffer).expect(HttpCode.NOT_FOUND);
 });
 
 test(`API returns status code 400 when trying to change an offer with invalid data`, async () => {
@@ -243,7 +282,8 @@ test(`API returns status code 400 when trying to change an offer with invalid da
     title: `невалидный`,
     description: `объект`,
     picture: `объявления`,
-    type: `нет поля price`
+    type: `нет поля price`,
+    userId: 1,
   };
 
   return request(app).put(`/offers/2`).send(invalidOffer).expect(HttpCode.BAD_REQUEST);
@@ -291,6 +331,7 @@ describe(`API returns a list of comments to given offer`, () => {
 
 describe(`API creates a comment if data is valid`, () => {
   const newComment = {
+    userId: 1,
     text: `Валидному комментарию достаточно этого поля`
   };
 
@@ -298,9 +339,7 @@ describe(`API creates a comment if data is valid`, () => {
   let response;
   beforeAll(async () => {
     app = await createAPI();
-    response = await request(app)
-      .post(`/offers/2/comments`)
-      .send(newComment);
+    response = await request(app).post(`/offers/2/comments`).send(newComment);
   });
 
   test(`Status code 201`, () => expect(response.statusCode).toBe(HttpCode.CREATED));
@@ -310,7 +349,7 @@ describe(`API creates a comment if data is valid`, () => {
 
 test(`API refuses to create a comment when data is invalid, and returns status code 400`, async () => {
   const app = await createAPI();
-  return request(app).post(`/offers/1/comments`).send({}).expect(HttpCode.BAD_REQUEST);
+  return request(app).post(`/offers/1/comments`).send({text: `Не указан userId`}).expect(HttpCode.BAD_REQUEST);
 });
 
 describe(`API correctly deletes a comment`, () => {

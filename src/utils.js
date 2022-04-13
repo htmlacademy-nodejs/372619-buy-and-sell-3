@@ -3,7 +3,7 @@
 const {nanoid} = require(`nanoid`);
 
 const MAX_ID_LENGTH = 6;
-const generateId = () => nanoid(MAX_ID_LENGTH);
+const generateId = (length = MAX_ID_LENGTH) => nanoid(length);
 
 const getRandomInt = (min, max) => {
   min = Math.ceil(min);
@@ -23,9 +23,14 @@ const shuffle = (someArray) => {
 
 const ensureArray = (value) => Array.isArray(value) ? value : [value];
 
+const prepareErrors = (errors) => {
+  return errors.response.data.split(`\n`);
+};
+
 module.exports = {
   getRandomInt,
   shuffle,
   generateId,
-  ensureArray
+  ensureArray,
+  prepareErrors
 };

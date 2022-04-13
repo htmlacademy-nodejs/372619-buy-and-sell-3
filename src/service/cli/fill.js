@@ -6,6 +6,7 @@ const {
   getRandomInt,
   shuffle,
 } = require(`../../utils`);
+const {OfferType} = require(`../../constants`);
 
 const DEFAULT_COUNT = 1;
 const MAX_COMMENTS_COUNT = 4;
@@ -15,11 +16,6 @@ const FILE_TITLES_PATH = `./data/titles.txt`;
 const FILE_SENTENCES_PATH = `./data/sentences.txt`;
 const FILE_CATEGORIES_PATH = `./data/categories.txt`;
 const FILE_COMMENTS_PATH = `./data/comments.txt`;
-
-const OfferType = {
-  OFFER: `OFFER`,
-  SALE: `SALE`,
-};
 
 const SumRestrict = {
   MIN: 1000,
@@ -35,15 +31,13 @@ const users = [
   {
     email: `ivanov@example.com`,
     passwordHash: `5f4dcc3b5aa765d61d8327deb882cf99`,
-    firstName: `Иван`,
-    lastName: `Иванов`,
+    name: `Иван Иванов`,
     avatar: `avatar1.jpg`
   },
   {
     email: `petrov@example.com`,
     passwordHash: `5f4dcc3b5aa765d61d8327deb882cf99`,
-    firstName: `Пётр`,
-    lastName: `Петров`,
+    name: `Пётр Петров`,
     avatar: `avatar2.jpg`
   }
 ];
@@ -105,8 +99,8 @@ module.exports = {
     const offerCategories = offers.map((offer, index) => ({offerId: index + 1, categoryId: offer.category[0]}));
 
     const userValues = users.map(
-        ({email, passwordHash, firstName, lastName, avatar}) =>
-          `('${email}', '${passwordHash}', '${firstName}', '${lastName}', '${avatar}')`
+        ({email, passwordHash, name, avatar}) =>
+          `('${email}', '${passwordHash}', '${name}', '${avatar}')`
     ).join(`,\n`);
 
     const categoryValues = categories.map((name) => `('${name}')`).join(`,\n`);

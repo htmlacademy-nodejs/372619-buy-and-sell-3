@@ -4,6 +4,7 @@ const express = require(`express`);
 const request = require(`supertest`);
 const {Sequelize} = require(`sequelize`);
 
+const passwordUtils = require(`../lib/password`);
 const initDb = require(`../lib/init-db`);
 const searchApi = require(`./search`);
 const SearchService = require(`../data-service/search`);
@@ -18,16 +19,14 @@ const mockCategories = [
 const mockUsers = [
   {
     email: `ivanov@example.com`,
-    passwordHash: `5f4dcc3b5aa765d61d8327deb882cf99`,
-    firstName: `Иван`,
-    lastName: `Иванов`,
+    passwordHash: passwordUtils.hashSync(`ivanov`),
+    name: `Иван Иванов`,
     avatar: `avatar1.jpg`
   },
   {
     email: `petrov@example.com`,
-    passwordHash: `5f4dcc3b5aa765d61d8327deb882cf99`,
-    firstName: `Пётр`,
-    lastName: `Петров`,
+    passwordHash: passwordUtils.hashSync(`petrov`),
+    name: `Пётр Петров`,
     avatar: `avatar2.jpg`
   }
 ];
@@ -40,13 +39,16 @@ const mockOffers = [
     "type": `OFFER`,
     "price": 96004,
     "categories": [
-      `Животные`
+      `Игры`,
+      `Журналы`
     ],
     "comments": [
       {
+        "user": `petrov@example.com`,
         "text": `С чем связана продажа? Почему так дешёво? А сколько игр в комплекте?`
       }
-    ]
+    ],
+    "user": `ivanov@example.com`,
   },
   {
     "title": `Куплю породистого кота.`,
@@ -55,19 +57,23 @@ const mockOffers = [
     "type": `OFFER`,
     "price": 50937,
     "categories": [
-      `Животные`
+      `Игры`
     ],
     "comments": [
       {
+        "user": `ivanov@example.com`,
         "text": `Почему в таком ужасном состоянии?`
       },
       {
+        "user": `petrov@example.com`,
         "text": `А сколько игр в комплекте? Оплата наличными или перевод на карту? Почему в таком ужасном состоянии?`
       },
       {
+        "user": `ivanov@example.com`,
         "text": `С чем связана продажа? Почему так дешёво? Почему в таком ужасном состоянии? Вы что?! В магазине дешевле.`
       }
-    ]
+    ],
+    "user": `petrov@example.com`,
   },
   {
     "title": `Куплю детские санки.`,
@@ -76,13 +82,16 @@ const mockOffers = [
     "type": `OFFER`,
     "price": 5005,
     "categories": [
-      `Журналы`
+      `Журналы`,
+      `Животные`
     ],
     "comments": [
       {
+        "user": `petrov@example.com`,
         "text": `Оплата наличными или перевод на карту? С чем связана продажа? Почему так дешёво?`
       }
-    ]
+    ],
+    "user": `ivanov@example.com`,
   },
   {
     "title": `Продам советскую посуду. Почти не разбита.`,
@@ -91,13 +100,15 @@ const mockOffers = [
     "type": `OFFER`,
     "price": 24537,
     "categories": [
-      `Журналы`
+      `Игры`
     ],
     "comments": [
       {
+        "user": `ivanov@example.com`,
         "text": `С чем связана продажа? Почему так дешёво?`
       }
-    ]
+    ],
+    "user": `petrov@example.com`,
   },
   {
     "title": `Продам коллекцию журналов «Огонёк».`,
@@ -106,13 +117,15 @@ const mockOffers = [
     "type": `OFFER`,
     "price": 81996,
     "categories": [
-      `Игры`
+      `Животные`
     ],
     "comments": [
       {
+        "user": `ivanov@example.com`,
         "text": `Совсем немного...`
       }
-    ]
+    ],
+    "user": `ivanov@example.com`,
   }
 ];
 

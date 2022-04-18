@@ -1,0 +1,21 @@
+header.header(class={header: true, "header--logged": user})
+  .header__wrapper
+    a.header__logo.logo(href='/')
+      img(src='/img/logo.svg' width='179' height='34' alt='Логотип Куплю Продам')
+    nav.header__user-menu
+      ul.header__list
+        li.header__item
+          a(href='/') Публикации
+        li.header__item
+          a(href='/my/comments') Комментарии
+        li.header__item
+          a(href='/logout') Выход
+    form.search(method='get' action='/search' autocomplete='off')
+      input(type='search' name='query' placeholder='Поиск' aria-label='Поиск')
+      .search__icon
+      .search__close-btn
+    if user
+      a.header__avatar.avatar(href='#')
+        img(src=`/img/${user.avatar}` alt='Аватар пользователя')
+    else
+      a.header__input(href='/register') Вход и регистрация

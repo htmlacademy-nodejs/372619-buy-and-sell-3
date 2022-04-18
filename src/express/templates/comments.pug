@@ -1,0 +1,28 @@
+extends layout.pug
+
+block content
+  main.page-content
+    section.comments
+      .comments__wrapper
+        h1.visually-hidden Страница комментариев
+        each offer of offers
+          .comments__block
+            .comments__header
+              a.announce-card(href='#')
+                h2.announce-card__title #{offer.title}
+                span.announce-card__info
+                  span.announce-card__price ₽ #{offer.price}
+                  +ticketLabel(offer.type)(class=`announce-card__type`)
+            ul.comments-list
+              if offer.comments
+                each comment of offer.comments
+                  li.js-card
+                    .comment-card
+                      .comment-card__header
+                        a.comment-card__avatar.avatar(href='#')
+                          img(src='/img/avatar03.jpg' alt='Аватар пользователя')
+                        p.comment-card__author Александр Бурый
+                      .comment-card__content
+                        p
+                          | #{comment.text}
+                      button.comment-card__delete.js-delete(type='button') Удалить

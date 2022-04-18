@@ -1,0 +1,70 @@
+### Список категорий
+GET http://localhost:3000/api/category
+Accept: application/json
+
+### Поиск
+GET http://localhost:3000/api/search?query=советскую
+
+### Запрашивает все объявления
+GET http://localhost:3000/api/offers
+
+### Запрашивает объявление с идентификатором :id
+GET http://localhost:3000/api/offers/2
+
+### Удаление объявления с идентификатором :id
+DELETE http://localhost:3000/api/offers/2
+
+### Добавление нового объявления
+POST http://localhost:3000/api/offers
+Content-Type: application/json
+
+{
+  "categories": [1],
+  "description": "При покупке с меня бесплатная доставка в черте города. Две страницы заляпаны свежим кофе. Пользовались бережно и только по большим праздникам., Бонусом отдам все аксессуары.",
+  "picture": "item03.jpg",
+  "title": "Продам новую приставку Sony Playstation 5.",
+  "price": 42698,
+  "type": "OFFER",
+  "userId": 1
+}
+
+### Обновление объявления
+PUT http://localhost:3000/api/offers/1
+Content-Type: application/json
+
+{
+  "categories": [1],
+  "description": "При покупке с меня бесплатная доставка в черте города. Две страницы заляпаны свежим кофе. Пользовались бережно и только по большим праздникам., Бонусом отдам все аксессуары.",
+  "picture": "item03.jpg",
+  "title": "Новый заголовок",
+  "price": 900,
+  "type": "OFFER",
+  "userId": 1
+}
+
+### Список комментариев
+GET http://localhost:3000/api/offers/1/comments
+
+### Удаляет комментарий
+DELETE http://localhost:3000/api/offers/1/comments/2
+
+### Добавляет новый комментарий к публикации
+POST http://localhost:3000/api/offers/1/comments
+Content-Type: application/json
+
+{
+  "text": "Это новый комментарий",
+  "userId": 1
+}
+
+### Добавляет нового пользователя
+POST http://localhost:3000/api/user
+Content-Type: application/json
+
+{
+  "avatar": "max.png",
+  "name": "Максим Рябов",
+  "email": "designmr@mail.ru",
+  "password": "NewLife2000",
+  "passwordRepeated": "NewLife2000"
+}
